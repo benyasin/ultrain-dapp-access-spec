@@ -23,6 +23,8 @@ UltrainOne接收到付款请求的数据后，唤起app付款界面确认，构�
 付款完成后并通过webview.postMessage接口向html5发送回执消息。
 
 DAPP通过window.postMessage(data)发送的data格式如下：
+
+```
 {
     "chainId": "HJiRph6xN",
     "contract": "benyasin1112",
@@ -35,13 +37,19 @@ DAPP通过window.postMessage(data)发送的data格式如下：
       "memo": "test"
     }
 }
+```
+
 
 UltrainOne通过webview.postMessage(data)发送给第三方DAPP html5的回执消息格式如下：
+
+```
 {
     "bizId": "86534135672411",              //业务id
     "success": true                         //业务执行结果
     "msg": "",                              //消息，成功时为空，失败时有具体原因
 }
+
+```
 
 注意：如果DAPP重复发送相同bizId的请求，UltrainOne会忽略，不做处理。
 
@@ -59,6 +67,7 @@ Cona在线安装地址为 https://chrome.google.com/webstore/detail/cona/joopmnk
 
 Cona离线下载地址为 https://ultrain-cona.oss-cn-hangzhou.aliyuncs.com/cona.crx
 
+```
 window.addEventListener('load', function () {
   if (typeof window.Cona !== 'undefined') {
     console.log('Cona is enabled')
@@ -67,10 +76,14 @@ window.addEventListener('load', function () {
   }
 })
 
+```
+
+
 ####  发起交易
 
 Cona.send(params)
 
+```
  const to = 'utest1';
     const contract = 'utrio.token';
     const quantity = 10;
@@ -83,6 +96,9 @@ Cona.send(params)
       // 处理异常
       console.log(e);
 });
+
+```
+
 
 > params参数介绍如下所示：
 > to: 接收账户，类型为字符串
