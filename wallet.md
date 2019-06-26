@@ -11,15 +11,17 @@ UltrainOne可以从苹果商店、谷歌商店、小米或华为应用市场以�
 
 #### DAPP获取账户或用户信息
 
-DAPP上架DAPP市场后，管理员会根据产品需求设置进入该DAPP时是否需要保证钱包状态可用。
-UltrainOne会在点击DAPP入口时做账号检测，如果用户钱包中没有任何账号，则会拦截并定向到钱包账号创建或导入的页面。
-因此用户在请求第三方DAPP的URL时，一定是有账号信息的。如果设置成不需要保证钱包状态可用，则可以直接进入DAPP。
+DAPP上架UltrainOne的DAPP市场时，管理员会根据DAPP是否接入钱包来配置用户进入DAPP时是否需要进行钱包状态的检查。
+如果是纯展示类的DAPP,则可以不需要拦截，直接进入DAPP页面。
+如果是接入了钱包的，UltrainOne会在点击DAPP入口时做钱包状态检测，钱包不可用时会被拦截到钱包账号创建或导入页面。
+因此从UltrainOne的DAPP入口经WebView访问DAPP时，跳转的URL中是有含有钱包账户、用户手机等信息的。
 
 从UltrainOne进入到DAPP时，会默认在DAPP提供的URL的后面拼接上用户ID、用户手机号和账户名，格式如：
 https://dapp_xxxx?chainId=rX9r2wf&userId=Xjudda12&phoneNum=008615857169999&accountName=abcdefg12345
 注意：上述四个参数都具有唯一性。
 
-如果DAPP需要获取用户的头像、邮箱、姓名等其它信息，则需要通过单独的授权接口请求。
+如果DAPP需要获取用户的头像、邮箱、姓名等其它信息，则需要通过单独的授权接口请求。开发者在个人中心添加DAPP时，需要选择对应的数据请求接口做授权。
+相关操作流程请参考[流程规范]一章。
 
 #### DAPP唤起UltrainOne转账
 
@@ -43,7 +45,6 @@ DAPP通过window.postMessage(data)发送的data格式如下：
 }
 ```
 
-
 UltrainOne通过webview.postMessage(data)发送给第三方DAPP html5的回执消息格式如下：
 
 ```
@@ -60,12 +61,14 @@ UltrainOne通过webview.postMessage(data)发送给第三方DAPP html5的回执�
 
 ## 二、桌面端插件钱包 Cona
 
-Cona是一款基于浏览器插件的超脑链轻钱包，涵盖转账、收款、账号同步及授权认证等功能，可以让你在浏览器环境
+Cona是一款基于浏览器插件的超脑链轻钱包，涵盖转账、收款、账号同步、连接与授权认证等功能，可以让你在浏览器环境
 中运行超脑链的DApp。
+
+<img width="50%" src="https://user-images.githubusercontent.com/1866848/60158890-8d659480-9824-11e9-8a46-f97599600b08.jpg">
 
 #### 检查安装
 
-会在浏览器注入window.Cona对象，检测window.Cona如果存在则表示用户有安装。
+Cona会在浏览器注入window.Cona对象，检测window.Cona如果存在则表示用户有安装。
 
 Cona在线安装地址为 https://chrome.google.com/webstore/detail/cona/joopmnkobcdaojgcmohnjhloldhfgfgk
 
@@ -82,8 +85,38 @@ window.addEventListener('load', function () {
 
 ```
 
+#### 连接Cona
+
+DAPP接入Cona后，用户在DAPP中使用钱包时，需要先进行一个"连接"确认，确认后Cona会将钱包中默认账户的账户名与公钥信息返回给DAPP。
+经用户确认后，DAPP才可以继续使用Cona进行转账与鉴权等操作。
+
+Cona.connectRequest() 
+
+返回信息格式为
+
+```
+
+
+```
+
+#### 授权认证
+
+Cona提供了一个针对账户的线下授权功能，类似于Google的第三方登录授权。经用户主动授权后，Cona会对授权账户进行签名与验签，确认账户信息合法后，
+返回授权账户的账户名与公钥信息给DAPP。
+
+Cona.authenticate()
+
+返回信息格式为
+
+```
+
+
+```
+
 
 ####  发起交易
+
+DAPP内部需要发起转账时，可唤起Cona钱包的转账界面，经用户手动转账。
 
 Cona.send(params)
 
