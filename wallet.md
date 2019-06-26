@@ -5,7 +5,7 @@
 UltrainOne是用ReactNative实现的钱包综合APP, 其中UltrainOne的DAPP应用市场汇集了若干第三方应用，
 针对html5实现的第三方web应用，UltrainOne采用Webview的形式直接打开应用并与产生数据交互。
 
-![WechatIMG19](https://user-images.githubusercontent.com/1866848/60152198-2939d500-9812-11e9-96d9-8c4a058f0197.jpeg)
+<img width="50%" src="https://user-images.githubusercontent.com/1866848/60152198-2939d500-9812-11e9-96d9-8c4a058f0197.jpeg">
 
 UltrainOne可以从苹果商店、谷歌商店、小米或华为应用市场以及[Ultrain官网](https://ultrain.io/)下载。
 
