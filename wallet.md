@@ -36,6 +36,7 @@ DAPP通过window.postMessage(data)发送的data格式如下：
     "chainId": "HJiRph6xN",
     "contract": "benyasin1112",
     "action": "transfer",
+    "type": "transfer",                     //转账类型
     "bizId": "86534135672411",              //业务id
     "data": {
       "receiver": "benyasin1112",           //商户账号
