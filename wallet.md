@@ -118,6 +118,7 @@ data的具体内容取决于调用的方法的入参，依次罗列即可，所�
     data() {
       return {
         accountName: '',
+        chainId: '',
         data: '...',
       };
     },
@@ -128,17 +129,17 @@ data的具体内容取决于调用的方法的入参，依次罗列即可，所�
       });
 
       this.accountName = this.$route.query.accountName;
+      this.chainId = this.$route.query.chainId;
     },
     methods: {
       handleTransferClick() {
         this.sendData(JSON.stringify({
-          'chainId': 'rk5LChTx4',
+          'chainId': this.chainId,
           'contract': 'ultrainpoint',
           'action': 'transfer',
           'type': 'transfer',
           'bizId': Math.random() * 10000,
           'data': {
-            'payer': this.accountName,         //用户付款账号
             'receiver': 'benyasin1',           //商户账号
             'quantity': '1 UPOINT',            //数量及单位
             'memo': 'test',
@@ -148,7 +149,7 @@ data的具体内容取决于调用的方法的入参，依次罗列即可，所�
 
       handleContractClick() {
         this.sendData(JSON.stringify({
-          'chainId': 'rk5LChTx4',
+          'chainId': this.chainId,
           'contract': 'ben',
           'action': 'hi',
           'type': 'contract',
