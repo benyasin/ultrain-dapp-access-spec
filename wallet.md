@@ -33,15 +33,15 @@ DAPP通过window.postMessage(data)发送的data格式如下：
 
 ```
 {
-    "chainId": "HJiRph6xN",
-    "contract": "benyasin1112",
-    "action": "transfer",
-    "type": "transfer",                     //转账类型
-    "bizId": "86534135672411",              //业务id
+    "chainId": "HJiRph6xN",                 //[必填],链ID,从url的参数中获取后回填至此
+    "contract": "benyasin1112",             //[必填],如果转账UGAS,则值为"utrio.token"，否则值为具体的发币合约的owner账号
+    "action": "transfer",                   //[必填],转账业务，值为固定的值"transfer"
+    "type": "transfer",                     //[必填],转账业务的固定值为"transfer"
+    "bizId": "86534135672411",              //[必填],业务id,用来保证同一业务不会重复转账
     "data": {
-      "receiver": "benyasin1112",           //商户账号
-      "quantity": "1.0000 BGGG",            //数量及单位
-      "memo": "test"
+      "receiver": "benyasin1112",           //[必填],收款账号，一般为商家的账号
+      "quantity": "1.50 BGGG",              //[必填],数量及单位，如果是UGAS,则比如"100.0000 UGAS"
+      "memo": "test"                        //[必填],值可以空
     }
 }
 ```
@@ -59,6 +59,45 @@ UltrainOne通过webview.postMessage(data)发送给第三方DAPP html5的回执�
 
 注意：如果DAPP重复发送相同bizId的请求，UltrainOne会忽略，不做处理。
 
+
+#### DAPP唤起UltrainOne调用合约方法（非转账类）
+
+UltrainOne针对非转账类的合约方法调用提供一个通用的接口。
+DAPP在html5中通过window.postMessage接口向UltrainOne的Webview发送数据，
+UltrainOne接收到调用合约方法的请求后，唤起app的合约方法调用界面进行确认，构建方法调用逻辑，由用户自行签名并完成方法调用，
+方法调用完成后并通过webview.postMessage接口向html5发送回执消息。
+
+DAPP通过window.postMessage(data)发送的data格式如下：
+
+```
+{
+    "chainId": "HJiRph6xN",                 //[必填],链ID,从url的参数中获取后回填至此
+    "contract": "benyasin1112",             //[必填],值为具体合约的owner账号, 比如"ben"
+    "action": "doAction",                   //[必填],值为合约中具体的某个方法名，比如"doAction"
+    "type": "contract",                     //[必填],合约调用的固定值为"contract"
+    "bizId": "86534135672411",              //[必填],业务id,用来保证同一业务不会重复转账
+    "data": {                               //[必填],data固定，其内容为合约中方法的具体入参，以下仅为举例
+      "name": "bob",                        
+      "age": 30,                            
+      "msg": ""                             
+    }
+}
+```
+
+UltrainOne通过webview.postMessage(data)发送给第三方DAPP html5的回执消息格式如下：
+
+```
+{
+    "bizId": "86534135672411",              //业务id
+    "success": true                         //业务执行结果
+    "msg": "",                              //消息，成功时为空，失败时有具体原因
+}
+
+```
+
+注意：调用合约中的某个方法，用法上类型于转账，除了type参数为contract不同之外，data中的key也是不固定，
+data的具体内容取决于调用的方法的入参，依次罗列即可，所有参数不能缺失，即使值为空，也要保证有这个Key。
+如果DAPP重复发送相同bizId的请求，UltrainOne会忽略，不做处理。
 
 ## 二、桌面端插件钱包 Cona
 
