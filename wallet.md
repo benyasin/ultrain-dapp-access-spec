@@ -99,6 +99,84 @@ UltrainOne通过webview.postMessage(data)发送给第三方DAPP html5的回执�
 data的具体内容取决于调用的方法的入参，依次罗列即可，所有参数不能缺失，即使值为空，也要保证有这个Key。
 如果DAPP重复发送相同bizId的请求，UltrainOne会忽略，不做处理。
 
+以下给出一个Vue编写的集成UltrainOne的h5示例。
+```
+<template>
+  <div style="text-align: center;margin: 50px 0; font-size: 26px">
+    <button v-on:click="handleTransferClick">调钱包转账接口</button>
+    <p style="text-align: center">收到UltrainOne发送的数据: <span id="data">{{data}}</span></p>
+  </div>
+
+  <div style="text-align: center;margin: 100px 0; font-size: 26px">
+    <button v-on:click="handleContractClick">调合约某个接口</button>
+    <p style="text-align: center">收到UltrainOne发送的数据: <span id="data2">{{data}}</span></p>
+  </div>
+</template>
+<script>
+
+  export default {
+    data() {
+      return {
+        accountName: '',
+        data: '...',
+      };
+    },
+    mounted() {
+      document.addEventListener('message', (e) => {
+        this.data = e.data;
+        alert(this.data);
+      });
+
+      this.accountName = this.$route.query.accountName;
+    },
+    methods: {
+      handleTransferClick() {
+        this.sendData(JSON.stringify({
+          'chainId': 'rk5LChTx4',
+          'contract': 'ultrainpoint',
+          'action': 'transfer',
+          'type': 'transfer',
+          'bizId': Math.random() * 10000,
+          'data': {
+            'payer': this.accountName,         //用户付款账号
+            'receiver': 'benyasin1',           //商户账号
+            'quantity': '1 UPOINT',            //数量及单位
+            'memo': 'test',
+          },
+        }));
+      },
+
+      handleContractClick() {
+        this.sendData(JSON.stringify({
+          'chainId': 'rk5LChTx4',
+          'contract': 'ben',
+          'action': 'hi',
+          'type': 'contract',
+          'bizId': Math.random() * 10000,
+          'data': {
+            'name': this.accountName,
+            'age': 32,
+            'msg': 'hello',
+          },
+        }));
+      },
+
+      sendData(data) {
+        if (window.postMessage) {
+          console.log('sending data to webview...', data);
+          window.postMessage(data);
+        } else {
+          throw Error('postMessage接口还未注入');
+        }
+      },
+    },
+  };
+</script>
+
+
+
+```
+
 ## 二、桌面端插件钱包 Cona
 
 Cona是一款基于浏览器插件的超脑链轻钱包，涵盖转账、收款、账号同步、连接与授权认证等功能，可以让你在浏览器环境
