@@ -191,8 +191,20 @@ Cona会在浏览器注入window.Cona对象，检测window.Cona如果存在则表
 
 Cona在线安装地址为 https://chrome.google.com/webstore/detail/cona/joopmnkobcdaojgcmohnjhloldhfgfgk
 
-Cona离线下载地址为 https://ultrain-cona.oss-cn-hangzhou.aliyuncs.com/cona.crx
+Cona离线下载地址为 https://ultrain-cona.oss-cn-hangzhou.aliyuncs.com/cona.crx.zip
 
+离线包安装方法：
+
+>1.解压出cona.crx文件；
+>
+>2.打开Chrome，在URL中输入 chrome://extensions,同时打开右上角的开发者模式；
+>
+>3.将cona.crx拖拽到该网页中间进行添加；
+
+<img width="50%" src="https://user-images.githubusercontent.com/1866848/61033042-34395b80-a3f5-11e9-8b64-df6f7d65d383.png">
+
+
+检查是否成功安装的方法如下：
 
 ```
 window.addEventListener('load', function () {
