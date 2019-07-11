@@ -17,17 +17,19 @@ DAPP上架UltrainOne的DAPP市场时，管理员会根据DAPP是否接入钱包�
 因此从UltrainOne的DAPP入口经WebView访问DAPP时，跳转的URL中是有含有钱包账户、用户手机等信息的。
 
 从UltrainOne进入到DAPP时，会默认在DAPP提供的URL的后面拼接上用户ID、用户手机号和账户名，格式如：
-https://dapp_xxxx?chainId=rX9r2wf&userId=Xjudda12&phoneNum=008615857169999&accountName=abcdefg12345
+https://xxxx?chainId=rX9r2wf&userId=Xju1da5&phoneNum=008615857169999&accountName=abcdefg12345
 注意：上述四个参数都具有唯一性。
 
 如果DAPP需要获取用户的头像、邮箱、姓名等其它信息，则需要通过单独的授权接口请求。开发者在个人中心添加DAPP时，需要选择对应的数据请求接口做授权。
-相关操作流程请参考[流程规范]一章。
+相关操作流程请参考[流程规范](./flow.md)章节，相关接口文档请参考[DAPP API](https://developer.ultrain.io/documents)。
 
-#### DAPP唤起UltrainOne转账
+#### DAPP唤起UltrainOne单笔转账
 
 DAPP在html5中通过window.postMessage接口向UltrainOne的Webview发送数据，
 UltrainOne接收到付款请求的数据后，唤起app付款界面确认，构建转账逻辑，由用户自行签名并完成付款，
 付款完成后并通过webview.postMessage接口向html5发送回执消息。
+
+> 注意：如果DAPP重复发送相同bizId的请求，UltrainOne会忽略，不做处理。
 
 DAPP通过window.postMessage(data)发送的data格式如下：
 
@@ -57,8 +59,54 @@ UltrainOne通过webview.postMessage(data)发送给第三方DAPP html5的回执�
 
 ```
 
-注意：如果DAPP重复发送相同bizId的请求，UltrainOne会忽略，不做处理。
 
+
+#### DAPP唤起UltrainOne批量转账
+
+UltrainOne支持用户单次签名发生多笔转账的场景。比如，用户在一个猜涨跌的竞猜游戏中，支付20个UGAS时，其中18个UGAS进入奖池，剩下2个UGAS作为手续费进入商家收益账号。
+在这种场景下，用户只需要发起一次签名，就能够同时发起以上两笔转账。
+
+> 注意：该接口只支持最多同时两笔的转账需求，且要求两笔交易的bizId必须相同。
+
+DAPP通过window.postMessage(data)发送一个数组data，格式如下：
+
+```
+[{
+    "chainId": "HJiRph6xN",                 //[必填],链ID,从url的参数中获取后回填至此
+    "contract": "ultrainpoint",             //[必填],如果转账UGAS,则值为"utrio.token"，否则值为具体的发币合约的owner账号
+    "action": "transfer",                   //[必填],转账业务，值为固定的值"transfer"
+    "type": "transfer",                     //[必填],转账业务的固定值为"transfer"
+    "bizId": "86534135672411",              //[必填],业务id,用来保证同一业务不会重复转账
+    "data": {
+      "receiver": "guessbtc",               //[必填],收款账号，一般为商家的账号
+      "quantity": "18 UPOINT",              //[必填],数量及单位，如果是UGAS,则比如"100.0000 UGAS"
+      "memo": "pool"                        //[必填],值可以空
+    }
+},
+{
+    "chainId": "HJiRph6xN",                 //[必填],链ID,从url的参数中获取后回填至此
+    "contract": "ultrainpoint",             //[必填],如果转账UGAS,则值为"utrio.token"，否则值为具体的发币合约的owner账号
+    "action": "transfer",                   //[必填],转账业务，值为固定的值"transfer"
+    "type": "transfer",                     //[必填],转账业务的固定值为"transfer"
+    "bizId": "86534135672411",              //[必填],业务id,用来保证同一业务不会重复转账
+    "data": {
+      "receiver": "guessbtcgain",           //[必填],收款账号，一般为商家的账号
+      "quantity": "2 UPOINT",               //[必填],数量及单位，如果是UGAS,则比如"100.0000 UGAS"
+      "memo": "gain"                        //[必填],值可以空
+    }
+}]
+```
+
+UltrainOne通过webview.postMessage(data)发送给第三方DAPP html5的回执消息格式如下：
+
+```
+{
+    "bizId": "86534135672411",              //业务id
+    "success": true                         //业务执行结果
+    "msg": "",                              //消息，成功时为空，失败时有具体原因
+}
+
+```
 
 #### DAPP唤起UltrainOne调用合约方法（非转账类）
 
