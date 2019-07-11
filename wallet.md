@@ -201,7 +201,7 @@ Cona离线下载地址为 https://ultrain-cona.oss-cn-hangzhou.aliyuncs.com/cona
 >
 >3.将cona.crx拖拽到该网页中间进行添加；
 
-<img width="50%" src="https://user-images.githubusercontent.com/1866848/61033042-34395b80-a3f5-11e9-8b64-df6f7d65d383.png">
+<img width="80%" src="https://user-images.githubusercontent.com/1866848/61033042-34395b80-a3f5-11e9-8b64-df6f7d65d383.png">
 
 
 检查是否成功安装的方法如下：
