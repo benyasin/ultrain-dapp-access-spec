@@ -66,7 +66,7 @@ UltrainOne通过webview.postMessage(data)发送给第三方DAPP html5的回执�
 UltrainOne支持用户单次签名发生多笔转账的场景。比如，用户在一个猜涨跌的竞猜游戏中，支付20个UGAS时，其中18个UGAS进入奖池，剩下2个UGAS作为手续费进入商家收益账号。
 在这种场景下，用户只需要发起一次签名，就能够同时发起以上两笔转账。
 
-> 注意：该接口只支持最多同时两笔的转账需求，且要求两笔交易的bizId必须相同。
+> 注意：该接口只支持最多同时两笔的转账需求，且要求两笔交易的chainId、contract、bizId必须相同，即要求批量操作的是同一条链上的同一个合约。
 
 DAPP通过window.postMessage(data)发送一个数组data，格式如下：
 
